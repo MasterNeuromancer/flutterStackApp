@@ -61,29 +61,47 @@ class HomeScreenState extends State<HomeScreen> {
               ],
             ));
           }
-           if (currentState is InHomeState) {
-            return Center(
+          if (currentState is InHomeState) {
+            return Material(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(currentState.hello),
-                  Text('Flutter files: done'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => this._load(true),
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xffd399c1),
+                              Color(0xff9b5acf),
+                              Color(0xff611cdf),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'All Questions',
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
+                  ),
+                  Expanded(
+                    child: Container(),
                   ),
                 ],
               ),
             );
           }
           return Center(
-              child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(),
           );
-          
         });
   }
 
