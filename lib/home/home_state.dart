@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_stack_app/home/home_model.dart';
 
 abstract class HomeState extends Equatable {
   /// notify change state without deep clone state
   final int version;
-  
+
   final List propss;
-  HomeState(this.version,[this.propss]);
+  HomeState(this.version, [this.propss]);
 
   /// Copy object for use in action
   /// if need use deep clone
@@ -19,7 +20,6 @@ abstract class HomeState extends Equatable {
 
 /// UnInitialized
 class UnHomeState extends HomeState {
-
   UnHomeState(int version) : super(version);
 
   @override
@@ -32,35 +32,36 @@ class UnHomeState extends HomeState {
 
   @override
   UnHomeState getNewVersion() {
-    return UnHomeState(version+1);
+    return UnHomeState(version + 1);
   }
 }
 
 /// Initialized
 class InHomeState extends HomeState {
-  final String hello;
+  final QuestionData questionData;
 
-  InHomeState(int version, this.hello) : super(version, [hello]);
+  InHomeState(int version, this.questionData) : super(version, [questionData]);
 
   @override
-  String toString() => 'InHomeState $hello';
+  String toString() => 'InHomeState';
 
   @override
   InHomeState getStateCopy() {
-    return InHomeState(this.version, this.hello);
+    return InHomeState(this.version, this.questionData);
   }
 
   @override
   InHomeState getNewVersion() {
-    return InHomeState(version+1, this.hello);
+    return InHomeState(version + 1, this.questionData);
   }
 }
 
 class ErrorHomeState extends HomeState {
   final String errorMessage;
 
-  ErrorHomeState(int version, this.errorMessage): super(version, [errorMessage]);
-  
+  ErrorHomeState(int version, this.errorMessage)
+      : super(version, [errorMessage]);
+
   @override
   String toString() => 'ErrorHomeState';
 
@@ -71,6 +72,6 @@ class ErrorHomeState extends HomeState {
 
   @override
   ErrorHomeState getNewVersion() {
-    return ErrorHomeState(version+1, this.errorMessage);
+    return ErrorHomeState(version + 1, this.errorMessage);
   }
 }

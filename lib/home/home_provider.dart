@@ -1,20 +1,22 @@
-import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter_stack_app/home/index.dart';
+import 'package:http/http.dart' as http;
 
 class HomeProvider {
-  Future<void> loadAsync(String token) async {
-    /// write from keystore/keychain
-    await Future.delayed(Duration(seconds: 2));
-  }
+  HomeProvider();
 
-  Future<void> saveAsync(String token) async {
-    /// write from keystore/keychain
-    await Future.delayed(Duration(seconds: 2));
-  }
+  Future<QuestionData> getData() async {
+    var res =
+        await http.get('http://10.0.2.2:8000/stack/questions/?format=json');
+    var decodedJson = jsonDecode(res.body);
 
-  void test(bool isError) {
-    if (isError == true){
-      throw Exception('manual error');
+    QuestionData qd = QuestionData();
+    qd.questions = [];
+    for (var json in decodedJson) {
+      qd.questions.add(Questions.fromJson(json));
     }
+
+    return qd;
   }
 }
-

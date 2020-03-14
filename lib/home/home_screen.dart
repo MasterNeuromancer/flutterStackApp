@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stack_app/home/index.dart';
+import 'package:pk_skeleton/pk_skeleton.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -40,9 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
           HomeState currentState,
         ) {
           if (currentState is UnHomeState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return PKCardListSkeleton();
           }
           if (currentState is ErrorHomeState) {
             return Center(
@@ -62,6 +61,7 @@ class HomeScreenState extends State<HomeScreen> {
             ));
           }
           if (currentState is InHomeState) {
+            QuestionData questionData = currentState.questionData;
             return Material(
               child: Column(
                 children: <Widget>[
@@ -84,16 +84,91 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      AppBar(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0.0,
+                        title: Text('Stack Overflow'),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).size.height * 0.15,
+                        left: 20.0,
+                        right: MediaQuery.of(context).size.width * 0.3,
+                        child: Text(
+                          'Hi, Welcome to the Stack Overflow Questions App!',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  Text(
-                    'All Questions',
-                    style: TextStyle(
-                      color: Colors.black,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'All Questions',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: Container(),
+                    child: ListView.builder(
+                      itemCount: questionData.questions.length,
+                      itemBuilder: (context, i) {
+                        Questions questions = questionData.questions[i];
+                        String tags = questions.tags;
+                        tags = tags.substring(1, tags.length - 1);
+                        var tagList = tags.split(',');
+                        return ListTile(
+                          dense: true,
+                          isThreeLine: true,
+                          leading: CircleAvatar(
+                            radius: 25.0,
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.blueGrey,
+                            child: Text(
+                              questions.voteCount.toString(),
+                            ),
+                          ),
+                          title: Text(
+                            questions.question,
+                          ),
+                          trailing: Chip(
+                            label: Text(
+                              questions.views,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            backgroundColor: Colors.blueGrey,
+                          ),
+                          subtitle: Wrap(
+                            children: tagList
+                                .map(
+                                  (t) => Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Chip(
+                                      label: Text(
+                                        t,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      backgroundColor: Color(0xff9b5acf),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

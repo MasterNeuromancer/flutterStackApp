@@ -6,9 +6,8 @@ import 'package:meta/meta.dart';
 
 @immutable
 abstract class HomeEvent {
-  Future<HomeState> applyAsync(
-      {HomeState currentState, HomeBloc bloc});
-  final HomeRepository _homeRepository = HomeRepository();
+  Future<HomeState> applyAsync({HomeState currentState, HomeBloc bloc});
+  final HomeProvider _homeProvider = HomeProvider();
 }
 
 class UnHomeEvent extends HomeEvent {
@@ -19,7 +18,6 @@ class UnHomeEvent extends HomeEvent {
 }
 
 class LoadHomeEvent extends HomeEvent {
-   
   final bool isError;
   @override
   String toString() => 'LoadHomeEvent';
@@ -27,17 +25,13 @@ class LoadHomeEvent extends HomeEvent {
   LoadHomeEvent(this.isError);
 
   @override
-  Future<HomeState> applyAsync(
-      {HomeState currentState, HomeBloc bloc}) async {
+  Future<HomeState> applyAsync({HomeState currentState, HomeBloc bloc}) async {
     try {
-      if (currentState is InHomeState) {
-        return currentState.getNewVersion();
-      }
-      await Future.delayed(Duration(seconds: 2));
-      this._homeRepository.test(this.isError);
-      return InHomeState(0, 'Hello world');
+      QuestionData res = await _homeProvider.getData();
+      return InHomeState(0, res);
     } catch (_, stackTrace) {
-      developer.log('$_', name: 'LoadHomeEvent', error: _, stackTrace: stackTrace);
+      developer.log('$_',
+          name: 'LoadHomeEvent', error: _, stackTrace: stackTrace);
       return ErrorHomeState(0, _?.toString());
     }
   }
